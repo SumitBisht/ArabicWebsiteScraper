@@ -6,12 +6,7 @@ class DbInserter
 	# a mechanism (like the mosaheh gem) to repair while retranslating
 	# to arabic flawlessly.
 	def insert(dataset)
-		dbhost = 'localhost'
-		dbuser = 'root'
-		dbpwd = ''
-		dbname = 'website_data'
-		conn = Mysql.connect(dbhost, dbuser, dbpwd, dbname)
-
+		conn = get_connection
 		dataset['type'] = dataset['type'].force_encoding("ISO-8859-1").encode("UTF-8")
 		dataset['area'] = dataset['area'].force_encoding("ISO-8859-1").encode("UTF-8")
 		dataset['city'] = dataset['city'].force_encoding("ISO-8859-1").encode("UTF-8")
@@ -19,5 +14,22 @@ class DbInserter
 
 		stmt = conn.prepare('insert into contents(url, type, area, city, phone) values(?,?,?,?,?)')
 		stmt.execute dataset['url'], dataset['type'], dataset['area'], dataset['city'], dataset['phone']
+		conn.close!
+	end
+
+	def get_scanned_urls!(array)
+		conn = get_connection
+		conn.query("select url from contents").each do |col|
+			array<<url
+		end
+		conn.close!
+	end
+
+	def get_connection
+		dbhost = 'localhost'
+		dbuser = 'root'
+		dbpwd = ''
+		dbname = 'website_data'
+		Mysql.connect(dbhost, dbuser, dbpwd, dbname)
 	end
 end
