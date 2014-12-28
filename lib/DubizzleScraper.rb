@@ -33,11 +33,12 @@ class DubizzleScraper
   end
 
   def test_one_page
-  	extract_information(@ads[0])
+  	details = extract_information(@ads[0])
   end
 
   # Extract the desired information from within the provided ad
   def extract_information(ad)
+  	extrated = {}
   	puts "Extracting: "+ad
   	page = Nokogiri::HTML(open(ad))
   	area = ''
@@ -59,11 +60,18 @@ class DubizzleScraper
 
   	area = details[1].split('،')[0]
   	city = details[1].split('،')[1]
+  	phone = page.css('.contact-number').children.text
 
   	puts "Type is "+links[8]
   	puts "area is "+area+" and city is "+city
-  	puts "Phone number: "+ page.css('.contact-number').children.text
+  	puts "Phone number: "+ phone
+  	extrated["url"] = ad
+  	extrated["type"] = links[8]
+  	extrated["area"] = area
+  	extrated["city"] = city
+  	extrated["phone"]= phone
 
+  	return extrated
   end
 
 end
