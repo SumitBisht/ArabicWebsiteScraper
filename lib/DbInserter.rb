@@ -20,7 +20,7 @@ class DbInserter
 	def get_scanned_urls!(array)
 		conn = get_connection
 		conn.query("select url from contents").each do |col|
-			array<<url
+			array<<col
 		end
 		conn.close!
 	end

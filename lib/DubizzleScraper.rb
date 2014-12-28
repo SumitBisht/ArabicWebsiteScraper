@@ -15,12 +15,13 @@ class DubizzleScraper
 
   # Find all the ads on the page
   def all_ads(url=nil)
-  	puts "Fetching the ads from the page"
+  	puts "Fetching the ads from the website"
 	@ads = []
 	site = 'http://saudi.dubizzle.com'
-	url =  site+"/en/items-for-sale/search/" if(url==nil)
+	url =  site+"/ar/items-for-sale/search/" if(url==nil)
 	doc = Nokogiri::HTML(open(url))
 	contents = doc.at_css('.d-listing').css('.d-listing__item')
+	puts 'found '+contents.length.to_s+' items to scan.'
 	contents.each do |item|
 	  text = item.children[1].children[1].children[1].attributes["href"].value
 	  # puts site+text
@@ -29,7 +30,18 @@ class DubizzleScraper
   end
 
   def process_all_ads
-  	@ads.map { |ad| extract_information(ad) }
+  	db = DbInserter.new
+  	currrent_urls = []
+  	db.get_scanned_urls!(currrent_urls)
+  	puts 'found '+currrent_urls.length.to_s+' existing records in db'
+  	@ads.map { |ad|
+  		if(currrent_urls.index(ad)==nil)
+  			info = extract_information(ad)
+  			db.insert(info)
+  		else
+  			puts 'skipping already known url'
+  		end
+  	}
   end
 
   def test_one_page
