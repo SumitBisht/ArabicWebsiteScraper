@@ -13,34 +13,46 @@ Save data + item name into Database.
 
 class DubizzleScraper
 
-  # Find all the ads on the page
-  def all_ads(url=nil)
-  	puts "Fetching the ads from the website"
+  def initialize
 	@ads = []
+	@existing = []
+	db = DbInserter.new
+	db.get_scanned_urls!(@existing)
+	puts 'found '+@existing.length.to_s+' existing records in db'
+  end
+
+  # Find all new ads on the page
+  def all_new_ads(url=nil)
 	site = 'http://saudi.dubizzle.com'
 	url =  site+"/ar/items-for-sale/search/" if(url==nil)
+  	puts "Fetching the ads from "+url
+	
 	doc = Nokogiri::HTML(open(url))
+	nothing_found = doc.css('d-no-results__heading')
+	if(nothing_found.children && nothing_found.children.length>0)
+		return
+	end
 	contents = doc.at_css('.d-listing').css('.d-listing__item')
 	puts 'found '+contents.length.to_s+' items to scan.'
 	contents.each do |item|
 	  text = item.children[1].children[1].children[1].attributes["href"].value
-	  # puts site+text
-	  @ads.push(site+text)
+	  text = site+text
+
+	  if(@existing.index(text)!=nil)
+		puts 'stopping after getting already known url'
+		return
+	  end
+	  @ads.push(text)
 	end
+	next_page_url = site+doc.css('.u-pager__item--next').children[1].attribute('href').value
+	puts 'now crawling to next page for items'
+	all_new_ads(next_page_url)
   end
 
   def process_all_ads
-  	db = DbInserter.new
-  	currrent_urls = []
-  	db.get_scanned_urls!(currrent_urls)
-  	puts 'found '+currrent_urls.length.to_s+' existing records in db'
   	@ads.map { |ad|
-  		if(currrent_urls.index(ad)==nil)
-  			info = extract_information(ad)
-  			db.insert(info)
-  		else
-  			puts 'skipping already known url'
-  		end
+		info = extract_information(ad)
+		db.insert(info)
   	}
   end
 
