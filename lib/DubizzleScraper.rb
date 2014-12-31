@@ -25,28 +25,31 @@ class DubizzleScraper
   def all_new_ads(url=nil)
 	site = 'http://saudi.dubizzle.com'
 	url =  site+"/ar/items-for-sale/search/" if(url==nil)
-  	puts "Fetching the ads from "+url
-	
-	doc = Nokogiri::HTML(open(url))
-	nothing_found = doc.css('d-no-results__heading')
-	if(nothing_found.children && nothing_found.children.length>0)
-		return
-	end
-	contents = doc.at_css('.d-listing').css('.d-listing__item')
-	puts 'found '+contents.length.to_s+' items to scan.'
-	contents.each do |item|
-	  text = item.children[1].children[1].children[1].attributes["href"].value
-	  text = site+text
+	proceed = true
+	while proceed
+  		puts "Fetching the ads from "+url
+		doc = Nokogiri::HTML(open(url))
+		nothing_found = doc.css('d-no-results__heading')
+		if(nothing_found.children && nothing_found.children.length>0)
+			return
+		end
+		contents = doc.at_css('.d-listing').css('.d-listing__item')
+		puts 'found '+contents.length.to_s+' items to scan.'
+		contents.each do |item|
+		  text = item.children[1].children[1].children[1].attributes["href"].value
+		  text = site+text
 
-	  if(@existing.index(text)!=nil)
-		puts 'stopping after getting already known url'
-		return
-	  end
-	  @ads.push(text)
+		  if(@existing.index(text)!=nil)
+			puts 'stopping after getting already known url'
+			proceed = false
+		else
+		  @ads.push(text)
+		  end
+		end
+		url = site+doc.css('.u-pager__item--next').children[1].attribute('href').value
+		puts 'now crawling to next page for items'
 	end
-	next_page_url = site+doc.css('.u-pager__item--next').children[1].attribute('href').value
-	puts 'now crawling to next page for items'
-	all_new_ads(next_page_url)
+	# all_new_ads(next_page_url)
   end
 
   def process_all_ads
