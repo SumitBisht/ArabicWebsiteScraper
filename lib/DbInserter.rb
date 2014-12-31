@@ -1,4 +1,4 @@
-require 'mysql' # uses the ruby-mysql gem
+require 'mysql2' # uses the mysql2 gem
 class DbInserter
 	
 	# Inserts the dataset into the predefined table in the database.
@@ -12,17 +12,16 @@ class DbInserter
 		dataset['city'] = dataset['city'].force_encoding("ISO-8859-1").encode("UTF-8")
 		dataset['phone'] = dataset['phone'].force_encoding("ISO-8859-1").encode("UTF-8")
 
-		stmt = conn.prepare('insert into contents(url, type, area, city, phone) values(?,?,?,?,?)')
-		stmt.execute dataset['url'], dataset['type'], dataset['area'], dataset['city'], dataset['phone']
-		conn.close!
+		stmt = conn.query("insert into contents(url, type, area, city, phone) values('#{dataset['url']}','#{dataset['type']}','#{dataset['area']}','#{dataset['city']}','#{dataset['phone']}')")
+		conn.close
 	end
 
 	def get_scanned_urls!(array)
 		conn = get_connection
 		conn.query("select url from contents").each do |col|
-			array<<col
+			array<<col["url"]
 		end
-		conn.close!
+		conn.close
 	end
 
 	def get_connection
@@ -30,6 +29,7 @@ class DbInserter
 		dbuser = 'root'
 		dbpwd = ''
 		dbname = 'website_data'
-		Mysql.connect(dbhost, dbuser, dbpwd, dbname)
+		# Mysql.connect(dbhost, dbuser, dbpwd, dbname)
+		Mysql2::Client.new(:host=>dbhost, :username=>dbuser, :password=>dbpwd, :database=>dbname)
 	end
 end
