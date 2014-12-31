@@ -46,6 +46,10 @@ class DubizzleScraper
 		  @ads.push(text)
 		  end
 		end
+		if(doc.css('.u-pager__item--next').children[1] == nil)
+			puts 'Completed scanning for lists, proceeding to scrape individual items'
+			return
+		end
 		url = site+doc.css('.u-pager__item--next').children[1].attribute('href').value
 		puts 'now crawling to next page for items'
 	end
