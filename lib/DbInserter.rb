@@ -7,10 +7,10 @@ class DbInserter
 	# to arabic flawlessly.
 	def insert(dataset)
 		conn = get_connection
-		dataset['type'] = dataset['type'].force_encoding("ISO-8859-1").encode("UTF-8")
-		dataset['area'] = dataset['area'].force_encoding("ISO-8859-1").encode("UTF-8")
-		dataset['city'] = dataset['city'].force_encoding("ISO-8859-1").encode("UTF-8")
-		dataset['phone'] = dataset['phone'].force_encoding("ISO-8859-1").encode("UTF-8")
+		dataset['type'] = dataset['type']#.force_encoding("ISO-8859-1").encode("UTF-8")
+		dataset['area'] = dataset['area']#.force_encoding("ISO-8859-1").encode("UTF-8")
+		dataset['city'] = dataset['city']#.force_encoding("ISO-8859-1").encode("UTF-8")
+		dataset['phone'] = dataset['phone']#.force_encoding("ISO-8859-1").encode("UTF-8")
 
 		stmt = conn.query("insert into contents(url, type, area, city, phone) values('#{dataset['url']}','#{dataset['type']}','#{dataset['area']}','#{dataset['city']}','#{dataset['phone']}')")
 		conn.close
