@@ -27,7 +27,7 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE IF NOT EXISTS `contents` (
-  `URL` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `URL` varchar(500) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `type` varchar(45) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `area` varchar(45) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `city` varchar(45) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
