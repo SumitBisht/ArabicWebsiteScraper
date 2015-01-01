@@ -16,8 +16,8 @@ class DubizzleScraper
   def initialize
 	@ads = []
 	@existing = []
-	db = DbInserter.new
-	db.get_scanned_urls!(@existing)
+	@db = DbInserter.new
+	@db.get_scanned_urls!(@existing)
 	puts 'found '+@existing.length.to_s+' existing records in db'
   end
 
@@ -59,7 +59,7 @@ class DubizzleScraper
   def process_all_ads
   	@ads.map { |ad|
 		info = extract_information(ad)
-		db.insert(info)
+		@db.insert(info)
   	}
   end
 
