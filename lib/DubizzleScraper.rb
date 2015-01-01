@@ -88,9 +88,9 @@ class DubizzleScraper
   	page.css(".u-link").each do |link|
   	  links<<link.text
   	end
-
-  	area = details[1].split('،')[0]
-  	city = details[1].split('،')[1]
+  	puts 'received details as: '+details[1]+' and splitting at ، '
+  	area = details[1].split('،')[1].to_s
+  	city = details[1].split('،')[0].to_s
   	phone = page.css('.contact-number').children.text
 
   	puts "Type is "+links[8]
