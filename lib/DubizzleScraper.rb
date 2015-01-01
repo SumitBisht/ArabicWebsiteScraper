@@ -58,8 +58,12 @@ class DubizzleScraper
 
   def process_all_ads
   	@ads.map { |ad|
-		info = extract_information(ad)
-		@db.insert(info)
+  		if(@existing.index(ad)!=nil)
+  			puts 'Skipping already known element'
+  		else
+			info = extract_information(ad)
+			@db.insert(info)
+		end
   	}
   end
 
