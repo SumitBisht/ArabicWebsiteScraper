@@ -42,8 +42,8 @@ class DubizzleScraper
 		  if(@existing.index(text)!=nil)
 			puts 'stopping after getting already known url'
 			proceed = false
-		else
-		  @ads.push(text)
+		  else
+		    @ads.push(text)
 		  end
 		end
 		if(doc.css('.u-pager__item--next').children[1] == nil)
@@ -61,8 +61,12 @@ class DubizzleScraper
   		if(@existing.index(ad)!=nil)
   			puts 'Skipping already known element'
   		else
-			info = extract_information(ad)
-			@db.insert(info)
+  			begin
+				info = extract_information(ad)
+				@db.insert(info)
+  			rescue Exception => e
+  				puts 'Error on scraping '+ad
+  			end
 		end
   	}
   end
