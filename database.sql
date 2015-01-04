@@ -31,7 +31,8 @@ CREATE TABLE IF NOT EXISTS `contents` (
   `type` varchar(45) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `area` varchar(45) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `city` varchar(45) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `phone` varchar(45) COLLATE utf8mb4_unicode_ci DEFAULT NULL
+  `phone` varchar(45) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `count` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
