@@ -42,6 +42,7 @@ class DubizzleScraper
 		  if(@existing.index(text)!=nil)
 			puts 'stopping after getting already known url'
 			proceed = false
+			break
 		  else
 		    @ads.push(text)
 		  end
